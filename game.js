@@ -1,4 +1,4 @@
-// game.js (FULL) — Pixel Dino بدل المربع
+// game.js (FULL) — Touch/Click/Space يعمل Restart إذا كنت ميت
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -8,7 +8,7 @@ const GROUND_Y = 200;
 
 let speed, gravity, score, alive, lastTime, spawnTimer;
 
-// ✅ حجم تصادم مناسب لرسمة البكسل
+// حجم تصادم مناسب لرسمة البكسل
 const dino = { x: 70, y: GROUND_Y, w: 42, h: 30, vy: 0, jumping: false };
 let cacti = [];
 
@@ -28,8 +28,12 @@ function reset() {
   scoreEl.textContent = "0";
 }
 
-function jump() {
-  if (!alive) return;
+// ✅ إذا ميت: أي قفزة = Restart
+function jumpOrRestart() {
+  if (!alive) {
+    reset();
+    return;
+  }
   if (!dino.jumping) {
     dino.vy = -620;
     dino.jumping = true;
@@ -51,37 +55,28 @@ function rectHit(a, b) {
   );
 }
 
-// ✅ رسم ديناصور بكسل (بدون صور)
+// رسم ديناصور بكسل (بدون صور)
 function drawDino(x, y) {
-  const s = 3; // حجم البكسل
-
+  const s = 3;
   const px = [
-    // الرأس
     [8,0],[9,0],[10,0],
     [7,1],[8,1],[9,1],[10,1],[11,1],
     [7,2],[8,2],[9,2],[10,2],[11,2],
-    // الرقبة/الجسم
     [6,3],[7,3],[8,3],[9,3],[10,3],
     [5,4],[6,4],[7,4],[8,4],[9,4],[10,4],
     [4,5],[5,5],[6,5],[7,5],[8,5],[9,5],
     [4,6],[5,6],[6,6],[7,6],[8,6],
-    // الذراع
     [6,5],[6,6],
-    // الرجلين
     [5,7],[7,7],
     [5,8],[7,8],
     [4,9],[5,9],[7,9],[8,9],
-    // الذيل
     [3,6],[2,6],[1,6],
     [2,7],[1,7]
   ];
 
   ctx.fillStyle = "#333";
-  for (const [cx, cy] of px) {
-    ctx.fillRect(x + cx * s, y + cy * s, s, s);
-  }
+  for (const [cx, cy] of px) ctx.fillRect(x + cx * s, y + cy * s, s, s);
 
-  // العين
   ctx.fillStyle = "#fff";
   ctx.fillRect(x + 10 * s, y + 1 * s, s, s);
 }
@@ -97,7 +92,7 @@ function draw() {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // ✅ ديناصور بكسل بدل مربع
+  // دينو
   drawDino(dino.x, dino.y);
 
   // صبارات
@@ -108,7 +103,7 @@ function draw() {
   if (!alive) {
     ctx.fillStyle = "rgba(0,0,0,0.65)";
     ctx.font = "28px system-ui";
-    ctx.fillText("انتهت اللعبه R  لاعادة اللعب", canvas.width / 2 - 140, 120);
+    ctx.fillText("Game Over — اضغط Space/لمس لإعادة اللعب", canvas.width / 2 - 220, 120);
   }
 }
 
@@ -160,17 +155,17 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 
-// تحكم
+// تحكم: Space/Up + Click/Touch
 window.addEventListener("keydown", (e) => {
-  if (e.code === "Space" || e.code === "ArrowUp") jump();
+  if (e.code === "Space" || e.code === "ArrowUp") jumpOrRestart();
   if (e.code === "KeyR") reset();
 });
-canvas.addEventListener("mousedown", jump);
+canvas.addEventListener("mousedown", jumpOrRestart);
 canvas.addEventListener(
   "touchstart",
   (e) => {
     e.preventDefault();
-    jump();
+    jumpOrRestart();
   },
   { passive: false }
 );
