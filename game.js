@@ -1,4 +1,4 @@
-// game.js (FULL) — Touch/Click/Space يعمل Restart إذا كنت ميت
+// game.js (FULL) — Click/Touch بأي مكان بالصفحة يعمل Jump أو Restart
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -28,7 +28,8 @@ function reset() {
   scoreEl.textContent = "0";
 }
 
-// ✅ إذا ميت: أي قفزة = Restart
+// ✅ إذا ميت: أي كبسة = Restart
+// ✅ إذا عايش: كبسة = Jump
 function jumpOrRestart() {
   if (!alive) {
     reset();
@@ -55,7 +56,6 @@ function rectHit(a, b) {
   );
 }
 
-// رسم ديناصور بكسل (بدون صور)
 function drawDino(x, y) {
   const s = 3;
   const px = [
@@ -103,14 +103,13 @@ function draw() {
   if (!alive) {
     ctx.fillStyle = "rgba(0,0,0,0.65)";
     ctx.font = "28px system-ui";
-    ctx.fillText("Game Over — اضغط Space/لمس لإعادة اللعب", canvas.width / 2 - 220, 120);
+    ctx.fillText("Game Over — اضغط بأي مكان لإعادة اللعب", canvas.width / 2 - 210, 120);
   }
 }
 
 function update(dt) {
   if (!alive) return;
 
-  // فيزياء القفز
   dino.vy += gravity * dt;
   dino.y += dino.vy * dt;
 
@@ -120,18 +119,15 @@ function update(dt) {
     dino.jumping = false;
   }
 
-  // تحريك العوائق
   for (const c of cacti) c.x -= speed * dt;
   cacti = cacti.filter((c) => c.x + c.w > -50);
 
-  // توليد عائق
   spawnTimer -= dt;
   if (spawnTimer <= 0) {
     spawnCactus();
     spawnTimer = 0.9 + Math.random() * 0.8;
   }
 
-  // تصادم
   for (const c of cacti) {
     if (rectHit(dino, c)) {
       alive = false;
@@ -139,7 +135,6 @@ function update(dt) {
     }
   }
 
-  // نقاط + زيادة سرعة
   score += dt * 10;
   speed += dt * 6;
   scoreEl.textContent = Math.floor(score).toString();
@@ -151,20 +146,25 @@ function loop(now) {
 
   update(dt);
   draw();
-
   requestAnimationFrame(loop);
 }
 
-// تحكم: Space/Up + Click/Touch
+// ✅ كيبورد (اختياري)
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space" || e.code === "ArrowUp") jumpOrRestart();
   if (e.code === "KeyR") reset();
 });
-canvas.addEventListener("mousedown", jumpOrRestart);
-canvas.addEventListener(
+
+// ✅ ماوس: كليك يسار بأي مكان بالصفحة
+window.addEventListener("mousedown", (e) => {
+  if (e.button === 0) jumpOrRestart();
+});
+
+// ✅ موبايل: لمس بأي مكان بالصفحة
+window.addEventListener(
   "touchstart",
   (e) => {
-    e.preventDefault();
+    e.preventDefault(); // يمنع سحب/سكرول وقت اللعب
     jumpOrRestart();
   },
   { passive: false }
