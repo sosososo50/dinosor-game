@@ -1,4 +1,5 @@
 // game.js (FULL) — Click/Touch بأي مكان بالصفحة يعمل Jump أو Restart
+// Dark mode: background black, dino + traps + game over text white
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -8,7 +9,6 @@ const GROUND_Y = 200;
 
 let speed, gravity, score, alive, lastTime, spawnTimer;
 
-// حجم تصادم مناسب لرسمة البكسل
 const dino = { x: 70, y: GROUND_Y, w: 42, h: 30, vy: 0, jumping: false };
 let cacti = [];
 
@@ -28,8 +28,6 @@ function reset() {
   scoreEl.textContent = "0";
 }
 
-// ✅ إذا ميت: أي كبسة = Restart
-// ✅ إذا عايش: كبسة = Jump
 function jumpOrRestart() {
   if (!alive) {
     reset();
@@ -74,34 +72,36 @@ function drawDino(x, y) {
     [2,7],[1,7]
   ];
 
-  ctx.fillStyle = "#333";
+  // ✅ الدينو أبيض
+  ctx.fillStyle = "#fff";
   for (const [cx, cy] of px) ctx.fillRect(x + cx * s, y + cy * s, s, s);
 
-  ctx.fillStyle = "#fff";
+  // ✅ العين سوداء (حتى تبين على الأبيض)
+  ctx.fillStyle = "#000";
   ctx.fillRect(x + 10 * s, y + 1 * s, s, s);
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // أرض
+  // ✅ أرض بيضاء
   ctx.beginPath();
   ctx.moveTo(0, GROUND_Y + dino.h);
   ctx.lineTo(canvas.width, GROUND_Y + dino.h);
-  ctx.strokeStyle = "#cfcfcf";
+  ctx.strokeStyle = "#fff";
   ctx.lineWidth = 2;
   ctx.stroke();
 
   // دينو
   drawDino(dino.x, dino.y);
 
-  // صبارات
-  ctx.fillStyle = "#111";
+  // ✅ الصبارات/الأفخاخ بيضاء
+  ctx.fillStyle = "#fff";
   for (const c of cacti) ctx.fillRect(c.x, c.y, c.w, c.h);
 
-  // Game Over
+  // ✅ Game Over أبيض بالنص
   if (!alive) {
-    ctx.fillStyle = "rgba(0,0,0,0.65)";
+    ctx.fillStyle = "#fff";
     ctx.font = "28px system-ui";
     ctx.fillText("Game over , press anywhere to retry", canvas.width / 2 - 210, 120);
   }
@@ -149,22 +149,19 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 
-// ✅ كيبورد (اختياري)
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space" || e.code === "ArrowUp") jumpOrRestart();
   if (e.code === "KeyR") reset();
 });
 
-// ✅ ماوس: كليك يسار بأي مكان بالصفحة
 window.addEventListener("mousedown", (e) => {
   if (e.button === 0) jumpOrRestart();
 });
 
-// ✅ موبايل: لمس بأي مكان بالصفحة
 window.addEventListener(
   "touchstart",
   (e) => {
-    e.preventDefault(); // يمنع سحب/سكرول وقت اللعب
+    e.preventDefault();
     jumpOrRestart();
   },
   { passive: false }
@@ -172,4 +169,3 @@ window.addEventListener(
 
 reset();
 requestAnimationFrame(loop);
-
