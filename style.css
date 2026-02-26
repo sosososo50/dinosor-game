@@ -1,26 +1,35 @@
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: system-ui, Arial;
-  background: #f6f6f6;
+  background: #000;              /* ✅ خلفية الصفحة سوداء */
   display: grid;
   place-items: center;
   height: 100vh;
 }
 
 .wrap { width: min(980px, 96vw); }
+
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  color: #333;
+  color: #fff;                   /* ✅ النص فوق أبيض */
 }
+
 .title { font-weight: 700; }
+
 canvas {
   width: 100%;
-  background: #fff;
-  border: 2px solid #e5e5e5;
+  background: #000;              /* ✅ خلفية اللعبة سوداء */
+  border: 2px solid #333;        /* ✅ إطار غامق */
   border-radius: 12px;
 }
-.hint { margin-top: 8px; color: #666; font-size: 14px; }
+
+.hint {
+  margin-top: 8px;
+  color: #bbb;                   /* ✅ تلميح فاتح */
+  font-size: 14px;
+}
