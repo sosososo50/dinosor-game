@@ -3,7 +3,7 @@
 body {
   margin: 0;
   font-family: system-ui, Arial;
-  background: #000;              /* ✅ خلفية الصفحة سوداء */
+  background: #ffffff;              /* ✅ خلفية الصفحة  */
   display: grid;
   place-items: center;
   height: 100vh;
@@ -33,3 +33,4 @@ canvas {
   color: #bbb;                   /* ✅ تلميح فاتح */
   font-size: 14px;
 }
+
