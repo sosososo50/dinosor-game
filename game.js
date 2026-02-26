@@ -103,7 +103,7 @@ function draw() {
   if (!alive) {
     ctx.fillStyle = "rgba(0,0,0,0.65)";
     ctx.font = "28px system-ui";
-    ctx.fillText("Game Over — اضغط بأي مكان لإعادة اللعب", canvas.width / 2 - 210, 120);
+    ctx.fillText("Game over , press anywhere to retry", canvas.width / 2 - 210, 120);
   }
 }
 
@@ -172,3 +172,4 @@ window.addEventListener(
 
 reset();
 requestAnimationFrame(loop);
+
